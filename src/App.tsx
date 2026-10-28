@@ -1,30 +1,31 @@
-import { useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
+import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [name, setName] = useState('')
 
-  const handlePlus = () => {
-    setCount(count + 1)
-  }
-
-  const handleMinus = () => {
-    if (count > 0) {
-      setCount(count - 1)
-    }
-  }
-
-  const handleReset = () => {
-    setCount(0)
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
   }
 
   return (
-    <>
-      <p>Count：{count}</p>
+    <div className="form">
+      <label htmlFor="name">名前</label>
 
-      <button onClick={handlePlus}>+1</button>
-      <button onClick={handleMinus}>-1</button>
-      <button onClick={handleReset}>Reset</button>
-    </>
+      <input
+        id="name"
+        type="text"
+        value={name}
+        onChange={handleChange}
+        placeholder="名前を入力"
+      />
+
+      {name.trim() === '' ? (
+        <p>名前を入力してください</p>
+      ) : (
+        <p>こんにちは、{name}さん</p>
+      )}
+    </div>
   )
 }
 
