@@ -1,30 +1,41 @@
-import { useState, type ChangeEvent } from 'react'
 import './App.css'
 
+type Task = {
+  id: number
+  title: string
+  completed: boolean
+}
+
+const tasks: Task[] = [
+  {
+    id: 1,
+    title: 'Reactを勉強する',
+    completed: false,
+  },
+  {
+    id: 2,
+    title: 'TypeScriptを勉強する',
+    completed: false,
+  },
+  {
+    id: 3,
+    title: 'Gitを勉強する',
+    completed: false,
+  },
+]
+
 function App() {
-  const [name, setName] = useState('')
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-  }
-
   return (
-    <div className="form">
-      <label htmlFor="name">名前</label>
+    <div className="task-list">
+      <h1>Task一覧</h1>
 
-      <input
-        id="name"
-        type="text"
-        value={name}
-        onChange={handleChange}
-        placeholder="名前を入力"
-      />
-
-      {name.trim() === '' ? (
-        <p>名前を入力してください</p>
-      ) : (
-        <p>こんにちは、{name}さん</p>
-      )}
+      {tasks.map((task) => (
+        <div key={task.id}>
+          <span>
+            {task.completed ? '☑' : '□'} {task.title}
+          </span>
+        </div>
+      ))}
     </div>
   )
 }
