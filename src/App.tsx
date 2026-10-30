@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './App.css'
 
 type Task = {
@@ -6,34 +7,71 @@ type Task = {
   completed: boolean
 }
 
-const tasks: Task[] = [
-  {
-    id: 1,
-    title: 'Reactを勉強する',
-    completed: false,
-  },
-  {
-    id: 2,
-    title: 'TypeScriptを勉強する',
-    completed: false,
-  },
-  {
-    id: 3,
-    title: 'Gitを勉強する',
-    completed: false,
-  },
-]
-
 function App() {
+  const [tasks, setTasks] = useState<Task[]>([
+    {
+      id: 1,
+      title: 'Reactを勉強する',
+      completed: false,
+    },
+    {
+      id: 2,
+      title: 'TypeScriptを勉強する',
+      completed: false,
+    },
+    {
+      id: 3,
+      title: 'Gitを勉強する',
+      completed: false,
+    },
+  ])
+
+  const [title, setTitle] = useState('')
+
+  const handleAdd = () => {
+    if (title.trim() === '') {
+      return
+    }
+
+    const newTask: Task = {
+      id: Date.now(),
+      title: title,
+      completed: false,
+    }
+
+    setTasks([...tasks, newTask])
+    setTitle('')
+  }
+
+  const handleDelete = (id: number) => {
+    const newTasks = tasks.filter((task) => task.id !== id)
+    setTasks(newTasks)
+  }
+
   return (
     <div className="task-list">
-      <h1>Task一覧</h1>
+      <h1>Task Management</h1>
+
+      <div className="task-form">
+        <input
+          type="text"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          placeholder="Taskを入力"
+        />
+
+        <button onClick={handleAdd}>追加</button>
+      </div>
 
       {tasks.map((task) => (
-        <div key={task.id}>
+        <div key={task.id} className="task">
           <span>
             {task.completed ? '☑' : '□'} {task.title}
           </span>
+
+          <button onClick={() => handleDelete(task.id)}>
+            削除
+          </button>
         </div>
       ))}
     </div>
