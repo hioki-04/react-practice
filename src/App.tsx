@@ -48,6 +48,24 @@ function App() {
     setTasks(newTasks)
   }
 
+  const handleToggle = (id: number) => {
+    const newTasks = tasks.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          completed: !task.completed,
+        }
+      }
+
+      return task
+    })
+
+    setTasks(newTasks)
+  }
+
+  const completedCount = tasks.filter((task) => task.completed).length
+  const incompleteCount = tasks.length - completedCount
+
   return (
     <div className="task-list">
       <h1>Task Management</h1>
@@ -65,15 +83,27 @@ function App() {
 
       {tasks.map((task) => (
         <div key={task.id} className="task">
-          <span>
-            {task.completed ? '☑' : '□'} {task.title}
-          </span>
+          <label className={task.completed ? 'completed' : ''}>
+            <input
+              type="checkbox"
+              checked={task.completed}
+              onChange={() => handleToggle(task.id)}
+            />
+
+            {task.title}
+          </label>
 
           <button onClick={() => handleDelete(task.id)}>
             削除
           </button>
         </div>
       ))}
+
+      <div className="summary">
+        <p>全件：{tasks.length}</p>
+        <p>完了：{completedCount}</p>
+        <p>未完了：{incompleteCount}</p>
+      </div>
     </div>
   )
 }
