@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 import Header from './Header'
@@ -13,23 +13,37 @@ type Task = {
 }
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: 1,
-      title: 'Reactを勉強する',
-      completed: false,
-    },
-    {
-      id: 2,
-      title: 'TypeScriptを勉強する',
-      completed: false,
-    },
-    {
-      id: 3,
-      title: 'Gitを勉強する',
-      completed: false,
-    },
-  ])
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem('tasks')
+
+    if (savedTasks) {
+      return JSON.parse(savedTasks)
+    }
+
+    return [
+      {
+        id: 1,
+        title: 'Reactを勉強する',
+        completed: false,
+      },
+      {
+        id: 2,
+        title: 'TypeScriptを勉強する',
+        completed: false,
+      },
+      {
+        id: 3,
+        title: 'Gitを勉強する',
+        completed: false,
+      },
+    ]
+  })
+
+  const [filter, setFilter] = useState('all')
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks))
+  }, [tasks])
 
   const handleAdd = (title: string) => {
     const newTask: Task = {
@@ -61,16 +75,42 @@ function App() {
     setTasks(newTasks)
   }
 
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === 'active') {
+      return !task.completed
+    }
+
+    if (filter === 'completed') {
+      return task.completed
+    }
+
+    return true
+  })
+
   return (
     <div className="task-list">
       <Header />
 
       <TaskForm onAdd={handleAdd} />
 
+      <div className="filters">
+        <button onClick={() => setFilter('all')}>
+          すべて
+        </button>
+
+        <button onClick={() => setFilter('active')}>
+          未完了
+        </button>
+
+        <button onClick={() => setFilter('completed')}>
+          完了
+        </button>
+      </div>
+
       <TaskSummary tasks={tasks} />
 
       <TaskList
-        tasks={tasks}
+        tasks={filteredTasks}
         onToggle={handleToggle}
         onDelete={handleDelete}
       />
